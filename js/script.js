@@ -4,12 +4,39 @@ var drop_array = new Array();
 //var to name the timers that make drops spawn and move every so often
 var spawntimer;
 var movetimer;
+//create a bucket object, instance of the bucket class below, not on stage yet
+var user_bucket = new Bucket(25,200);
 function init(){
+	//put bucket on stage
+	user_bucket.create();
+	//when a key is pressed, do a function that responds to keys
+	document.onkeydown = function(e){checkKey(e);};
 //set interval to do the spawn function every 2 seconds
 	spawntimer=setInterval(spawn, 2000);
 	//set interval to move the drops (20 times per second)
 	movetimer=setInterval(moveAllDrops, 1000/20);	
 }
+
+function checkKey(e){
+	//set up event again for certain browsers
+	e = e || window.event;
+	//if right arrow key
+	if (e.keyCode == '39'){
+		//add to bucket's x, will move it to the right
+		user_bucket.x +=15;
+		//change buckets style so it moves
+		user_bucket.item_on_page.style.left = user_bucket.x + "px";
+	}
+	//if right arrow key is clicked move to left
+	if (e.keyCode == '37'){
+		//add to bucket's x, will move it to the right
+		user_bucket.x -=15;
+		//change buckets style so it moves
+		user_bucket.item_on_page.style.left = user_bucket.x + "px";
+	}
+	
+}
+
 function spawn() {
 	//make an object based on the Drop Class:
 	var anotherdrop = new Drop();
@@ -37,6 +64,8 @@ function moveAllDrops(){
 function Drop(){
 	this.x; //starts empty, will keep track of each Drop's left-right position
 	this.y; //starts empty, will keep track of each Drop's up-down position
+	this.width = 50;
+	this.height = 50;
 	this.item_on_page;
 	/** function does lots of things when a Drop gets created on the page
 	*
@@ -75,3 +104,25 @@ function Drop(){
 		//console.log(drop_array.length);
 	}
 } //close the Class
+function Bucket(x,y){
+	this.x = x; //keeps bucket left right position
+	this.y = y; //keeps bucket up down position
+	this.width = 100;
+	this.height = 70;
+	this.item_on_page;
+	/** function does lots of things when a Drop gets created on the page
+	*
+	*/
+	this.create = function(){
+		//make a section element in the HTML, store it into the item-on-page we set up above.
+		this.item_on_page = document.createElement("div");
+				//use those x and y coordinates in the CSS to position the Drops:
+		this.item_on_page.style.left = this.x + "px";
+		this.item_on_page.style.top = this.y + "px";
+		//attach the item to our HTML hierarchy, as a child of the body:
+		document.getElementsByTagName("body")[0].appendChild(this.item_on_page);
+	}
+	this.destroy = function(){
+	
+	}
+}
