@@ -5,7 +5,7 @@ var drop_array = new Array();
 var spawntimer;
 var movetimer;
 //create a bucket object, instance of the bucket class below, not on stage yet
-var user_bucket = new Bucket(25,200);
+var user_bucket = new Bucket(25,400);
 function init(){
 	//put bucket on stage
 	user_bucket.create();
@@ -54,12 +54,37 @@ function moveAllDrops(){
 		currentdrop.item_on_page.style.top = currentdrop.y +"px";
 		
 		//if the drop is low enough, destroy it
-		if (currentdrop.y>300){
+		if (currentdrop.y>500){
+			currentdrop.destroy();
+		}
+		//if the drop touches the bucket, destroy it
+		if(collisionCheck(user_bucket,currentdrop)){
 			currentdrop.destroy();
 		}
 	}//close FOR LOOP
 	
 }//end moveAllDrops
+function collisionCheck(big_obj,sm_obj){
+	var big_left_edge = big_obj.x;
+	var sm_left_edge = sm_obj.x;
+	var big_right_edge = big_obj.x + big_obj.width;
+	var sm_right_edge = sm_obj.x + sm_obj.width;
+	var big_top_edge = big_obj.y;
+	var sm_top_edge = sm_obj.y;
+	var big_bottom_edge = big_obj.y + big_obj.height;
+	var sm_bottom_edge = sm_obj.y + sm_obj.height;
+	if(sm_left_edge > big_left_edge){
+		if(sm_right_edge < big_right_edge){
+			if(sm_top_edge > big_top_edge){
+				if(sm_bottom_edge < big_bottom_edge){
+	return true;
+	
+				}
+			}
+		}
+	}
+	return false;
+}
 //let's make a Class (blueprint) for each Drop we generate
 function Drop(){
 	this.x; //starts empty, will keep track of each Drop's left-right position
